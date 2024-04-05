@@ -6,9 +6,9 @@ Linux Bash Customization, AliMD Edition ;)
 
 ```bash
 export ONE_BASH="$HOME/1bash"
-export ONE_BASH_REPO_URL="https://github.com/Alwatr/1bash"
+export ONE_BASH_REPO_URL="https://github.com/njfamirm/1bash"
 export ONE_BASH_REF="main"
-bash <(curl -s "https://raw.githubusercontent.com/Alwatr/1bash/main/setup.sh")
+bash <(curl -s "https://raw.githubusercontent.com/njfamirm/1bash/main/setup.sh")
 
 vim ~/.gitconfig
 ```
