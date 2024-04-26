@@ -1,43 +1,47 @@
 [user]
-#   name = Ali Mihandoost
-#   email = ali.mihandoost@gmail.com
+  name = S. Amir Mohammad Najafi
+  email = njfamirm@gmail.com
+	signingkey = 23CE144CDD6A7F9F47380DBE01F68AC379738FE4
 
 [alias]
+  a = add -v
   c = commit -m
   ca = commit -am
+  cam = commit --amend
   can = commit --amend --no-edit
-  cl = clone
-  cl1 = clone --depth=1
-  pl = pull --prune --progress --autostash --rebase=true
-  plm = pull --prune --progress --autostash --rebase=false
-  p = push
-  pp = push --prune
-  pa = push --all
-  pt = push --tags
-  b = branch
-  ba = branch -avv
-  bd = push origin --delete
-  s = status -s
+  cl = clone -v
+  cl1 = clone --depth=1 -v
+  pl = pull --prune --progress --autostash --rebase=true -v
+  plm = pull --prune --progress --autostash --rebase=false -v
+  p = push -v
+  pp = push --prune -v
+  pa = push --all -v
+  pt = push --tags -v
+  b = branch -v
+  ba = branch -avv -v
+  bd = push origin --delete -v
+  s = status -s -v
   st = stash -u
-  sp = stash pop
-  m = merge
-  r = rebase
+  stp = stash pop
+  stl = stash list
+  m = merge -v
+  r = rebase -v
   rc = rebase --continue
   ra = rebase --abort
-  rs = rebase --skip
+  rs = reset
   co = checkout
   rh = reset --hard
   sw = switch
-  f = fetch
-  chp = cherry-pick
-  d = diff --color --color-words --abbrev
-  rn = !"git pl && git rebase origin/${1:-next} && git push -f #"
-  feat = !"git fetch && git switch -c feat/$1 origin/next && git push -u #"
-  sep = !"git fetch && git switch -c feat/$1 origin/next && shift && git cherry-pick $@ && git push -u && gh pr create --assignee @me --base next --fill --web #"
+  f = fetch -v
+  fa = fetch --all -v
+  chp = cherry-pick -v
+  d = diff --color --color-words --abbrev -v
+  rn = !"git pl && git r origin/${1:-next} && git p -f #"
+  feat = !"git f && git sw -c feat/$1 origin/next && git p -u #"
+  sep = !"git f && git sw -c feat/$1 origin/next && shift && git chp $@ && git p -u && gh pr create --assignee @me --base next --fill --web #"
   l = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
   # Show the diff between the latest commit and the current state
   df = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
-  ru = rebase-update # depot_tools specific
   t = tag -ln3
 
   hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
@@ -49,9 +53,11 @@
 
 [push]
   default = current
+  verbose = true
 
 [pull]
   rebase = false
+  verbose = true
 
 # so much color
 [color]
@@ -93,11 +99,14 @@
 [init]
   defaultBranch = main
 
-# [commit]
-# 	gpgsign = true
+[commit]
+	gpgsign = true
 
 [filter "lfs"]
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
+
+[fetch]
+  verbose = true
