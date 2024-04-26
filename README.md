@@ -6,22 +6,8 @@ Linux Bash Customization, AliMD Edition ;)
 
 ```bash
 export ONE_BASH="$HOME/1bash"
-export ONE_BASH_REPO_URL="https://github.com/njfamirm/1bash"
-export ONE_BASH_REF="main"
 bash <(curl -s "https://raw.githubusercontent.com/njfamirm/1bash/main/setup.sh")
-
-vim ~/.gitconfig
 ```
-
-## Customize Logo
-
-Put your logo or any welcome message in `~/.1bash_logo`.
-
-```bash
-vim ~/.1bash_logo
-```
-
-[Generate your own logo](http://patorjk.com/software/taag)
 
 ## Upgrade
 
