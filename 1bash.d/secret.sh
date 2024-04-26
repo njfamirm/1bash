@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # store secret env in this file, this file ignored in git
-if [ -r "$oneBash/secret.env" ]; then
-  source $oneBash/secret.env
+if [ -r ~/.secret.env ]; then
+  source ~/.secret.env
 fi
