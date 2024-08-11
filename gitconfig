@@ -20,7 +20,8 @@
   b = branch -v
   ba = branch -avv -v
   bd = push origin --delete -v
-  s = status -s -v
+  td = !"git tag --delete $1; git push -v origin --delete $1 #"
+  s = status -vs
   st = stash -u
   stp = stash pop
   stl = stash list
@@ -35,10 +36,10 @@
   f = fetch -v
   fa = fetch --all -v
   chp = cherry-pick -v
-  d = diff --color --color-words --abbrev -v
-  rn = !"git pl && git r origin/${1:-next} && git p -f #"
-  feat = !"git f && git sw -c feat/$1 origin/next && git p -u #"
-  sep = !"git f && git sw -c feat/$1 origin/next && shift && git chp $@ && git p -u && gh pr create --assignee @me --base next --fill --web #"
+  d = diff --color --color-words --abbrev
+  rn = !"git pl && git rebase origin/${1:-next} && git push -f #"
+  feat = !"git fetch && git switch -c feat/$1 origin/next && git push -u #"
+  sep = !"git fetch && git switch -c feat/$1 origin/next && shift && git cherry-pick $@ && git push -u && gh pr create --assignee @me --base next --fill --web #"
   l = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
   # Show the diff between the latest commit and the current state
   df = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
@@ -87,10 +88,6 @@
 [branch]
   autosetupmerge = true
 
-# so much color
-# [color]
-#  ui = always
-
 [color "diff"]
   meta = yellow bold
   commit = green bold
@@ -115,8 +112,8 @@
   changed = green
   untracked = cyan
 
-#[http]
-#  sslVerify = false
+# [http]
+#   sslVerify = false
 
 # [credential]
 #   helper = manager
