@@ -217,3 +217,8 @@ function localIp() {
 function publicIp() {
    curl -s ipinfo.io/json
 }
+
+function fix-permissions {
+	find "${1:-.}" -type d -exec chmod -vv 755 {} \;
+	find "${1:-.}" -type f -exec chmod -vv 644 {} \;
+}
