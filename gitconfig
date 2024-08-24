@@ -60,8 +60,8 @@
   verbose = true
 
 # so much color
-[color]
-  ui = always
+# [color]
+#  ui = always
 
 [color "diff"]
   meta = yellow bold
@@ -110,3 +110,5 @@
 
 [fetch]
   verbose = true
+[log]
+	date = default
