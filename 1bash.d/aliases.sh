@@ -62,11 +62,13 @@ alias co="code ."
 
 # Docker aliases
 alias d='docker'
-alias dc='docker-compose'
+alias dc='docker compose'
 alias dps="docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.RunningFor}}\t{{.Status}}\t{{.Ports}}'"
 alias dtop="docker ps --format '{{.Names}}' | xargs docker stats $1"
 alias dclog='dc logs -f --tail'
 
+alias pg_start="brew services start postgresql"
+alias pg_stop="brew services stop postgresql"
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
