@@ -43,10 +43,35 @@
   # Show the diff between the latest commit and the current state
   df = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
   t = tag -ln3
-
   hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
   type = cat-file -t
   dump = cat-file -p
+  delete-tags-and-releases = "!f() { \
+      pattern=\"$1\"; \
+      tags=$(git tag | grep \"$pattern\"); \
+      if [ -z \"$tags\" ]; then \
+          echo \"No tags found matching pattern: $pattern\"; \
+          exit 0; \
+      fi; \
+      echo \"The following tags will be deleted:\"; \
+      echo \"$tags\"; \
+      read -p \"Are you sure you want to delete these tags and their corresponding releases? (y/N): \" -r; \
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then \
+          echo \"Operation cancelled.\"; \
+          exit 0; \
+      fi; \
+      echo \"$tags\" | while read -r tag; do \
+          echo \"Deleting tag: $tag\"; \
+          git tag -d \"$tag\" 2>/dev/null || echo \"Failed to delete local tag: $tag\"; \
+          git push origin \":refs/tags/$tag\" 2>/dev/null || echo \"Failed to delete remote tag: $tag\"; \
+          if gh release view \"$tag\" > /dev/null 2>&1; then \
+              echo \"Deleting GitHub release for tag: $tag\"; \
+              gh release delete \"$tag\" --yes; \
+          else \
+              echo \"No GitHub release found for tag: $tag\"; \
+          fi; \
+      done; \
+  }; f"
 
 [help]
   autocorrect = 1
