@@ -205,3 +205,14 @@ function echoNc() {
 	echo "$message" | nc "$ip" 2080
 	echo "Sent!"
 }
+
+
+# clean remote removed git branch include not pushed branch
+function cb() {
+  for branch in $(git branch --no-color --merged | grep -Ev "\*|next"); do
+    read -p "Are you sure you want to delete $branch? (y/N) " choice
+    if [[ "$choice" =~ ^[Yy]$ ]]; then
+      git branch -d "$branch"
+    fi
+  done
+}

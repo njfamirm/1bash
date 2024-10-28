@@ -70,6 +70,13 @@ alias dclog='dc logs -f --tail'
 alias pg_start="brew services start postgresql"
 alias pg_stop="brew services stop postgresql"
 
+alias mongo_start="brew services start mongodb-community"
+alias mongo_stop="brew services stop mongodb-community"
+
+alias c=clear
+alias reload='source ~/.bash_profile'
+alias co='code .'
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi

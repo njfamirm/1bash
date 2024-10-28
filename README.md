@@ -12,5 +12,5 @@ bash <(curl -s "https://raw.githubusercontent.com/njfamirm/1bash/main/setup.sh")
 ## Upgrade
 
 ```bash
-bash ~/$ONE_BASH/setup.sh
+bash $ONE_BASH/setup.sh
 ```
