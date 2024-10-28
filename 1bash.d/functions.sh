@@ -186,3 +186,22 @@ function clean_ds_store() {
 function random() {
 	openssl rand -hex 32
 }
+
+#!/bin/bash
+
+# Function to send a notification using the Terminal Notifier
+function ncWatch() {
+	echo "nc watch:"
+	nc -l 2080 | while read message; do
+		echo "$message" | pbcopy
+		echo "$message"
+		echo "Copied!"
+	done	
+}
+
+function echoNc() {
+	local ip="$1"
+	local message="$2"
+	echo "$message" | nc "$ip" 2080
+	echo "Sent!"
+}
