@@ -1,6 +1,6 @@
 # 1Bash v3.0
 
-Linux Bash Customization, AliMD Edition ;)
+Linux Bash Customization, AliMD Edition customized by njfamirm ;)
 
 ## Install
 
