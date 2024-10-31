@@ -196,7 +196,7 @@ function ncWatch() {
 		echo "$message" | pbcopy
 		echo "$message"
 		echo "Copied!"
-	done	
+	done
 }
 
 function echoNc() {
@@ -215,4 +215,12 @@ function cb() {
       git branch -d "$branch"
     fi
   done
+}
+
+function localIp() {
+    ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'
+}
+
+function publicIp() {
+    curl -s ifconfig.me
 }
