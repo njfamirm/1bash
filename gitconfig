@@ -84,6 +84,9 @@
   rebase = false
   verbose = true
 
+[branch]
+  autosetupmerge = true
+
 # so much color
 # [color]
 #  ui = always
