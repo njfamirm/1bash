@@ -47,5 +47,8 @@ mkdir -p $BACKUP_DIR
 createSymlink $ONE_BASH/inputrc.sh ~/.inputrc
 createSymlink $ONE_BASH/bash_profile.sh ~/.bash_profile
 createSymlink $ONE_BASH/gitconfig ~/.gitconfig
+createSymlink $ONE_BASH/config/.vimrc ~/.vimrc
+createSymlink $ONE_BASH/config/tmux.conf ~/tmux.conf
+
 
 echoStep '🎉 Done'

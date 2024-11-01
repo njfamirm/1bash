@@ -56,7 +56,7 @@ function whois {
 	/usr/bin/whois -h whois.internic.net $domain | sed '/NOTICE:/q'
 }
 
-function localip {
+function localIpDevice {
 	function _localip { echo "📶  "$(ipconfig getifaddr "$1"); }
 	export -f _localip
 	local purple="\x1B\[35m" reset="\x1B\[m"
@@ -211,9 +211,9 @@ function cb() {
 }
 
 function localIp() {
-    ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'
+  ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'
 }
 
 function publicIp() {
-    curl -s ifconfig.me
+   curl -s ipinfo.io/json
 }
