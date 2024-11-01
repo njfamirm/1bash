@@ -151,13 +151,6 @@ nameserver 8.8.8.8
 EOF
 }
 
-function dns-hack {
-cat << EOF > /etc/resolv.conf
-nameserver 178.22.122.100
-nameserver 94.232.174.194
-EOF
-}
-
 # ffmpeg
 
 function ffm {
