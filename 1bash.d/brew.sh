@@ -18,7 +18,7 @@ brew_update() {
 }
 
 brew_setup_base() {
-  PACKAGES=('tmux' 'tree' 'vim' 'zsh' 'git' 'curl' 'wget' 'fzf' '')
+  PACKAGES=('tmux' 'tree' 'vim' 'git' 'curl' 'wget' 'fzf' 'v2ray' 'zoxide')
   echo "Install packages with brew"
   brew update
   brew upgrade
