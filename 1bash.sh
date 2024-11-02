@@ -20,7 +20,7 @@ if [ ! -d "$ONE_BASH/1bash.d" ]; then
   return
 fi
 
-for i in $ONE_BASH/1bash.d/base/*.sh; do
+for i in $ONE_BASH/1bash.d/base.d/*.sh; do
   if [ -r $i ]; then
     . $i
   fi
