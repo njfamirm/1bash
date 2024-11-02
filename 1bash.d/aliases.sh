@@ -79,6 +79,12 @@ alias c=clear
 alias reload='source ~/.bash_profile'
 alias co='code .'
 
+# Github CLI
+alias gh_merge='gh pr merge -d -m'
+alias gh_pr='gh pr create -a @me -f -w -B next'
+alias gh_pr_open='gh pr view --web'
+alias gh_repo_open='gh repo view --web'
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
