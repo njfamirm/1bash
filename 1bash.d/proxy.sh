@@ -14,11 +14,10 @@ unsetProxy() {
 
 function proxy() {
   if [ -f /tmp/v2ray_pid ]; then
-    echo "🛑 Previously started!"
-    return
+    stop_proxy
   fi
 
-  local path="$HOME/v2ray-config.json"
+  local path="$HOME/v2ray/config.json"
   echo "🚀 Run $path v2ray config"
   v2ray run --config $path > /dev/null &
   echo $! > /tmp/v2ray_pid
