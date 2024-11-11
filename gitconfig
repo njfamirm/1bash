@@ -47,6 +47,8 @@
   hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
   type = cat-file -t
   dump = cat-file -p
+  cleanup = !"git reflog expire --all --expire=now && git gc --prune=now --aggressive && git prune"
+
   delete-tags-and-releases = "!f() { \
       pattern=\"$1\"; \
       tags=$(git tag | grep \"$pattern\"); \
