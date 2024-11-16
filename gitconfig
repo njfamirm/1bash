@@ -1,6 +1,6 @@
 [user]
-  name = S. Amir Mohammad Najafi
-  email = njfamirm@gmail.com
+	name = S. Amir Mohammad Najafi
+	email = njfamirm@gmail.com
 	signingkey = 23CE144CDD6A7F9F47380DBE01F68AC379738FE4
 
 [alias]
@@ -139,10 +139,3 @@
   verbose = true
 [log]
 	date = default
-
-[credential "https://github.com"]
-	helper =
-	helper = !/opt/homebrew/bin/gh auth git-credential
-[credential "https://gist.github.com"]
-	helper =
-	helper = !/opt/homebrew/bin/gh auth git-credential

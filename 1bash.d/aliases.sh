@@ -81,7 +81,7 @@ alias co='code .'
 
 # Github CLI
 alias gh_merge='gh pr merge -d -m'
-alias gh_pr='gh pr create -a @me -f -w -B next'
+alias gh_pr='gh pr create -a @me -w -B next'
 alias gh_pr_open='gh pr view --web'
 alias gh_repo_open='gh repo view --web'
 
