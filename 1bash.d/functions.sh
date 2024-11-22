@@ -154,22 +154,25 @@ EOF
 # ffmpeg
 
 function ffm {
-  ffmpeg "${@:1:$#-1}" -map_metadata 0 -strict experimental -movflags +faststart -benchmark "${!#}"
+  ffmpeg "${@:1:$#-1}" -map_metadata 0 -movflags +faststart -benchmark "${!#}"
+}
+
+function convert2m4a {
+  input="$1"; shift;
+
+  echo "Convert (-c:a aac -b:a 64k -ar 22050)"
+  ffm -i "$input" -vn -c:a aac -b:a 64k -ar 22050 "$@" "${input}-low-quality.m4a"
+
+  echo "Convert (-c:a aac -b:a 128k -ar 44100)"
+  ffm -i "$input" -vn -c:a aac -b:a 128k -ar 44100 "$@" "${input}-medium-quality.m4a"
+
+  echo "Convert (-c:a aac -b:a 192k -ar 48000)"
+  ffm -i "$input" -vn -c:a aac -b:a 192k -ar 48000 "$@" "${input}-high-quality.m4a"
 }
 
 function convert2mp4 {
 	input="$1"; shift;
   ffm -i "$input" -c:v libx264 -c:a aac -q:a 0.5 $@ "${input}.mp4"
-}
-
-function convert2m4a {
-	input="$1"; shift;
-
-	echo "Convert (-c:a aac -q:a 0.5 -ar 22050)"
-  ffm -i "$input" -vn -c:a aac -q:a 0.5 -ar 22050 $@ "${input}.m4a"
-
-	echo "Convert (-c:a aac -q:a 1)"
-  ffm -i "$input" -vn -c:a aac -q:a 1 $@ "${input}-HQ.m4a"
 }
 
 function clean_ds_store() {
