@@ -2,6 +2,8 @@
 
 [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
 
+export HOMEBREW_NO_ENV_HINTS=1
+
 # Function to update, upgrade, and clean up Homebrew
 brew_update() {
   echo "Updating Homebrew..."
