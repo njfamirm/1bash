@@ -51,7 +51,7 @@
               git gc --prune=now --aggressive && \
               git prune && \
               git remote | while read remote; do echo "Pruning remote: $remote"; git remote prune "$remote"; done"
-  clean-all-branch= !"git branch | grep -v \"next\" | xargs git branch -D"
+  delete-all-branch= !"git branch | grep -v \"next\" | xargs git branch -D"
 
 [help]
   autocorrect = 1
