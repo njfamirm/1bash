@@ -52,6 +52,7 @@
               git prune && \
               git remote | while read remote; do echo "Pruning remote: $remote"; git remote prune "$remote"; done"
   delete-all-branch= !"git branch | grep -v \"next\" | xargs git branch -D"
+  delete-all-tag= !"git tag -d $(git tag -l)"
 
 [help]
   autocorrect = 1
