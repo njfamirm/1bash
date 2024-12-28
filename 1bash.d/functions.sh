@@ -187,7 +187,8 @@ function random() {
 
 # Function to send a notification using the Terminal Notifier
 function ncWatch() {
-	echo "nc watch:"
+  local local_ip=$(localIp)
+	echo "nc watch on ${local_ip}:"
 	nc -l 2080 | while read message; do
 		echo "$message" | pbcopy
 		echo "$message"

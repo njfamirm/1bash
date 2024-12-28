@@ -3,7 +3,6 @@
 setProxy() {
   echo "🌐 Set proxy on '1081', \`unsetProxy\` for disable"
   export http_proxy=http://127.0.0.1:1081
-  export http_proxy=http://192.168.5.146:1081
 }
 
 unsetProxy() {
