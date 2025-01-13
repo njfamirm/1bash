@@ -85,6 +85,14 @@ alias gh_pr='git p; gh pr create -a @me -w -B next'
 alias gh_pr_open='gh pr view --web'
 alias gh_repo_open='gh repo view --web'
 
+# Yarn package.json commands
+alias yw='yarn watch'
+alias yb='yarn build'
+alias yc='yarn clean'
+alias ycb='yarn clean && yarn build'
+alias ycw='yarn clean && yarn watch'
+
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
