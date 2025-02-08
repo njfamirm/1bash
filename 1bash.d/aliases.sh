@@ -86,9 +86,13 @@ alias gh_pr_open='gh pr view --web'
 alias gh_repo_open='gh repo view --web'
 
 # Yarn package.json commands
+alias ys='yarn start'
 alias yw='yarn watch'
 alias yb='yarn build'
+alias ybp='NODE_ENV=production yarn build'
 alias yc='yarn clean'
+alias yf='yarn format'
+alias yl='yarn lint'
 alias ycb='yarn clean && yarn build'
 alias ycw='yarn clean && yarn watch'
 
