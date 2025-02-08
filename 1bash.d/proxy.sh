@@ -11,13 +11,14 @@ unsetProxy() {
 }
 
 function proxy() {
+  local config_file="$HOME/.v2ray/${1:-'config'}.json"
+
   if [ -f /tmp/v2ray_pid ]; then
     stop_proxy
   fi
 
-  local path="$HOME/.v2ray/config.json"
-  echo "🚀 Run $path v2ray config"
-  v2ray run --config $path > /dev/null &
+  echo "🚀 Run $config_file v2ray config"
+  v2ray run --config $config_file > /dev/null &
   echo $! > /tmp/v2ray_pid
 }
 
