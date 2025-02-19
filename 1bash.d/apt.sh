@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Function to update, upgrade, and clean up apt
 apt_update() {
   echo "Updating package lists..."
   sudo apt update
@@ -32,7 +31,3 @@ apt_setup_base() {
   sudo apt autoremove -y
   sudo apt clean
 }
-
-# Uncomment the following lines to run the functions
-# apt_update
-# apt_setup_base
