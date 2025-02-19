@@ -11,7 +11,7 @@ unsetProxy() {
 }
 
 function proxy() {
-  local config_file="$HOME/.v2ray/${1:-'config'}.json"
+  local config_file="$HOME/.v2ray/${1:-config}.json"
 
   if [ -f /tmp/v2ray_pid ]; then
     stop_proxy
