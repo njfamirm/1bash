@@ -14,7 +14,7 @@ new_updated_branch() {
     return 1
   fi
 
-  git checkout next
+  git switch next
   git pull --prune --progress --autostash --rebase=true -v
   git switch -c $1
 }
