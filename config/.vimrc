@@ -106,7 +106,7 @@ call plug#begin()
 
 Plug 'itchyny/lightline.vim'
 Plug 'sainnhe/everforest', { 'as' : 'everforest'}
-" Plug 'preservim/nerdtree'
+Plug 'preservim/nerdtree'
 Plug 'LunarWatcher/auto-pairs'
 
 Plug 'xolox/vim-misc'
@@ -114,8 +114,6 @@ Plug 'majutsushi/tagbar'
 
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
-
-Plug 'leafgarland/typescript-vim'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
