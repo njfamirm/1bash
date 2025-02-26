@@ -4,19 +4,19 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # auto upgrade to the stable version and migrate Yarn packages
-function updateNodeToStable() {
-  echo "🚀 Starting update to the latest Current version..."
-  nvm install --default
+function updateNodeToLTS() {
+  echo "🚀 Starting update to the latest LTS version..."
+  nvm install --lts
   if [ $? -eq 0 ]; then
-    echo "✅ Successfully installed the latest Current version."
+    echo "✅ Successfully installed the latest LTS version."
   else
-    echo "❌ Failed to install the latest Current version."
+    echo "❌ Failed to install the latest LTS version."
     return 1
   fi
 
-  nvm alias default stable
+  nvm alias default lts/*
   if [ $? -eq 0 ]; then
-    echo "✅ Successfully set the default alias to the latest stable version."
+    echo "✅ Successfully set the default alias to the latest LTS version."
   else
     echo "❌ Failed to set the default alias."
     return 1
@@ -30,5 +30,5 @@ function updateNodeToStable() {
     return 1
   fi
 
-  echo "🎉 Update to the latest stable version completed."
+  echo "🎉 Update to the latest LTS version completed."
 }
