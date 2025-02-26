@@ -6,15 +6,21 @@ export HOMEBREW_NO_ENV_HINTS=1
 
 # Function to update, upgrade, and clean up Homebrew
 brew_update() {
+  brew update-reset
+
   echo "Updating Homebrew..."
   brew update
 
   echo "Upgrading all installed packages..."
   brew upgrade
+  brew upgrade --cask
 
   echo "Cleaning up old versions of installed packages..."
-  brew cleanup --prune=all --verbose
+  brew cleanup --prune=all --verbose --scrub
+  rm -rf "$(brew --cache)"
   brew autoremove
+
+  brew doctor
 
   echo "Homebrew maintenance completed."
 }
