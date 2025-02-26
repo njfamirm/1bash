@@ -175,10 +175,6 @@ function convert2mp4 {
   ffm -i "$input" -c:v libx264 -c:a aac -q:a 0.5 $@ "${input}.mp4"
 }
 
-function clean_ds_store() {
-	find . -name '*.DS_Store' -type f -ls -delete
-}
-
 function random() {
 	openssl rand -hex 32
 }
@@ -202,7 +198,6 @@ function echoNc() {
 	echo "$message" | nc "$ip" 2080
 	echo "Sent!"
 }
-
 
 # clean remote removed git branch include not pushed branch
 function cb() {
