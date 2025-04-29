@@ -38,7 +38,7 @@ setup_mac() {
   printf "⚙️ Configure Screenshots...\n"
   mkdir ~/Pictures/Screenshots
   defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screenshots"
-  defaults write com.apple.screencapture type -string "jpg"
+  defaults write com.apple.screencapture type -string "png"
   defaults write com.apple.screencapture "disable-shadow" -bool false
   defaults write com.apple.screencapture "include-date" -bool false
   defaults write com.apple.screencapture "show-thumbnail" -bool true
@@ -92,42 +92,35 @@ enable_firewall() {
   printf "Network firewall enabled"
 }
 
-function optimize_power() {
-  printf "Optimizing power settings..."
+optimize_power() {
+  printf "Setting standard power settings (display sleep 5 min)...\n"
 
-  sudo pmset -a displaysleep 15
-  sudo pmset -a disksleep 10
-  sudo pmset -a womp 1
-  sudo pmset -a networkoversleep 0
+  sudo pmset -a displaysleep 5 # Sets the display sleep timer to 5 minutes for all power sources ('-a').
+  sudo pmset -a disksleep 10 # Keeps the hard disk sleep timer at 10 minutes for all power sources.
+  sudo pmset -a womp 1 # Keeps Wake on Magic Packet enabled for all power sources.
+  sudo pmset -a networkoversleep 0 # Disables network interfaces during sleep for all power sources.
+
+  printf "Power settings optimized"
 }
 
-function clear_system_caches() {
+clear_system_caches() {
   sudo rm -rf ~/Library/Caches/*
   sudo rm -rf /Library/Caches/*
   printf "System caches cleared"
 }
 
-function remove_unused_languages() {
-  sudo rm -rf /System/Library/CoreServices/Language\ Chooser.app
-  printf "Unused languages removed"
-}
-
-function clear_font_caches() {
+clear_font_caches() {
   sudo atsutil databases -remove
   sudo atsutil server -shutdown
   sudo atsutil server -ping
   printf "Font caches cleared"
 }
 
-function remove_ds_store_files() {
+remove_ds_store_files() {
   find . -name '.DS_Store' -depth -exec rm -f {} \;
   printf "DS_Store files removed"
 }
 
-function disable_analytics() {
+disable_analytics() {
   brew analytics off
-}
-
-enhance_performance() {
-  sudo mdutil -d /System/Volumes/Preboot /opt # disable spotlight indexing on both folder
 }
