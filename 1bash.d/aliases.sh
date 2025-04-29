@@ -81,13 +81,16 @@ alias co='code .'
 
 # Github CLI
 alias gh_merge='gh pr merge -d -m'
+alias gh_squash='gh pr merge -d -s'
 alias gh_pr='git p; gh pr create -a @me -w -B next'
 alias gh_pr_open='gh pr view --web'
 alias gh_repo_open='gh repo view --web'
 
 # Yarn package.json commands
 alias ys='yarn start'
+alias yp='yarn preview'
 alias yw='yarn watch'
+alias yd='yarn dev'
 alias yb='yarn build'
 alias ybp='NODE_ENV=production yarn build'
 alias yc='yarn clean'
