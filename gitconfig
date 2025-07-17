@@ -67,6 +67,7 @@
 
 [branch]
   autosetupmerge = true
+  autosetupremote = true
 
 [color "diff"]
   meta = yellow bold
