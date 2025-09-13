@@ -96,6 +96,7 @@ alias ybp='NODE_ENV=production yarn build'
 alias yc='yarn clean'
 alias yf='yarn format'
 alias yl='yarn lint'
+alias yt='yarn test'
 alias ycb='yarn clean && yarn build'
 alias ycw='yarn clean && yarn watch'
 

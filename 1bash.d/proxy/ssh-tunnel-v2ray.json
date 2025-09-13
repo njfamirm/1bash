@@ -1,0 +1,98 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+
+  "inbounds": [
+    {
+      "listen": "0.0.0.0",
+      "port": 1081,
+      "protocol": "http",
+      "settings": {
+        "allowTransparent": true
+      }
+    },
+    {
+      "listen": "0.0.0.0",
+      "port": 1082,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+      }
+    }
+  ],
+
+  "outbounds": [
+    {
+      "protocol": "socks",
+      "tag": "proxy",
+      "settings": {
+        "servers": [
+          {
+            "address": "127.0.0.1",
+            "port": 1080,
+            "users": []
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    }
+  ],
+  "policy": {
+    "levels": {
+      "8": {
+        "connIdle": 300,
+        "downlinkOnly": 1,
+        "handshake": 4,
+        "uplinkOnly": 1
+      }
+    },
+    "system": {
+      "statsOutboundUplink": true,
+      "statsOutboundDownlink": true
+    }
+  },
+
+  "remarks": "US",
+
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "domain": [
+          "geoip:private",
+          "geosite:private",
+          "domain:alwatr.ir",
+          "domain:soffit.co",
+          "domain:thenexim.com",
+          "domain:stone-scoop.ir",
+          "ext:iran.dat:all",
+          "ext:iran.dat:ir"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "ext:iran.dat:ads",
+          "ext:domain-community-list.dat:category-ads-all",
+          "geosite:category-ads-all",
+          "ext:domain-community-list.dat:category-porn"
+        ],
+        "outboundTag": "block",
+        "type": "field"
+      },
+      {
+        "domain": ["ext:iran.dat:proxy"],
+        "outboundTag": "proxy",
+        "type": "field"
+      }
+    ]
+  },
+
+  "stats": {}
+}

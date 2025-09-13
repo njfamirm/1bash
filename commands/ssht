@@ -1,0 +1,156 @@
+#!/bin/bash
+
+# ==============================================================================
+#      INSTALLABLE & FLAG-DRIVEN SSH TUNNEL MANAGER
+#
+# This script manages multi-hop and direct SSH SOCKS tunnels by reading
+# configuration from command-line flags.
+#
+# --- INSTALLATION ---
+# 1. Save this file as 'tunnel-manager'.
+# 2. Make it executable: chmod +x tunnel-manager
+# 3. Move it to a directory in your PATH: sudo mv tunnel-manager /usr/local/bin/
+#
+# --- USAGE ---
+# See the usage function or run 'tunnel-manager help'.
+# Example:
+#   tunnel-manager tunnel -J user@jumphost -U user@finalhost -P 2222
+# ==============================================================================
+
+
+# --- DEFAULTS ---
+# Default settings for the local SOCKS proxy
+SOCKS_PORT=1080
+SOCKS_HOST="0.0.0.0"
+FINAL_PORT=22
+
+# --- USAGE FUNCTION ---
+# Prints help information.
+function usage() {
+  cat << EOF
+Usage: $(basename "$0") <command> [options]
+
+A script to manage direct and multi-hop (jump host) SSH SOCKS tunnels.
+
+Commands:
+  tunnel      Create a multi-hop tunnel through a jump server.
+  direct      Create a direct tunnel to a final server.
+  close       Find and kill any running tunnel processes started by this script.
+  help        Show this help message.
+
+Options for 'tunnel' and 'direct' commands:
+  -U <user@host>    [Required] Final server username and hostname/IP.
+  -P <port>         (Optional) Final server SSH port.
+  -p <port>         (Optional) Local SOCKS port to listen on. Default: ${SOCKS_PORT}.
+  -l <host>         (Optional) Local host/IP to listen on. Default: ${SOCKS_HOST}.
+
+Additional Options for 'tunnel' command:
+  -J <user@host>    [Required for tunnel] Jump server username and hostname/IP.
+  -K <port>         (Optional) Jump server SSH port.
+
+Examples:
+  # Create a direct tunnel to my-server.com on port 2222
+  $(basename "$0") direct -U user@my-server.com -P 2222
+
+  # Create a multi-hop tunnel via jump.host.com to an internal server
+  $(basename "$0") tunnel -J jumpuser@jump.host.com -U internaluser@10.0.0.5 -P 22
+
+  # Close all tunnels
+  $(basename "$0") close
+EOF
+  exit 1
+}
+
+
+# --- CORE FUNCTIONS ---
+
+# Unified function to find and kill any running SSH tunnel processes.
+function close_tunnel() {
+  # We need to know the SOCKS_HOST and SOCKS_PORT to kill the correct process.
+  # If they are not set as env vars, we use the defaults. This is a best-effort approach.
+  local target_host=${SOCKS_HOST:-"127.0.0.1"}
+  local target_port=${SOCKS_PORT:-"1080"}
+
+  echo "🔎 Checking for existing SSH tunnel processes on ${target_host}:${target_port}..."
+  local tunnel_pids=$(pgrep -f "ssh.*-D.*${target_host}:${target_port}")
+
+  if [ -n "$tunnel_pids" ]; then
+    echo "🛑 Killing SSH tunnel processes: $tunnel_pids"
+    kill $tunnel_pids
+    echo "✅ Tunnel processes terminated."
+  else
+    echo "✅ No active SSH tunnel processes found."
+  fi
+}
+
+# --- AUTOMATIC CLEANUP ---
+# The 'trap' command ensures 'close_tunnel' is called on exit.
+# This prevents orphaned SSH processes.
+trap close_tunnel EXIT INT TERM
+
+
+# --- SCRIPT EXECUTION ROUTER ---
+
+# The main command (tunnel, direct, etc.) is the first argument.
+COMMAND=$1
+shift # Removes the command from the argument list, so getopts can process the rest.
+
+case "$COMMAND" in
+  direct|tunnel)
+    # Parse options using getopts
+    while getopts ":U:P:J:K:p:l:" opt; do
+      case ${opt} in
+        U) FINAL_SERVER=$OPTARG ;;
+        P) FINAL_PORT=$OPTARG ;;
+        J) JUMP_SERVER=$OPTARG ;;
+        K) JUMP_PORT=$OPTARG ;;
+        p) SOCKS_PORT=$OPTARG ;;
+        l) SOCKS_HOST=$OPTARG ;;
+        \?) echo "Invalid option: -$OPTARG" >&2; usage ;;
+        :) echo "Option -$OPTARG requires an argument." >&2; usage ;;
+      esac
+    done
+
+    # --- Validate Inputs ---
+    if [ -z "$FINAL_SERVER" ]; then
+      echo "❌ Error: Final server (-U) required." >&2
+      usage
+    fi
+
+    if [ "$COMMAND" == "tunnel" ] && [ -z "$JUMP_SERVER" ]; then
+      echo "❌ Error: Jump server (-J) is required for the 'tunnel' command." >&2
+      usage
+    fi
+
+    # --- Execute Tunnel ---
+    close_tunnel # Clean up any old tunnels first
+
+    echo "🔗 Creating SOCKS proxy on ${SOCKS_HOST}:${SOCKS_PORT}..."
+
+    if [ "$COMMAND" == "tunnel" ]; then
+      echo "   via Jump Host: ${JUMP_SERVER}"
+      echo "   to Final Host: ${FINAL_SERVER}:${FINAL_PORT}"
+
+      JUMP_CMD_PART="-o ProxyJump=${JUMP_SERVER}"
+      # Add jump port if specified
+      if [ -n "$JUMP_PORT" ]; then
+        JUMP_CMD_PART="${JUMP_CMD_PART} -p ${JUMP_PORT}"
+      fi
+
+      ssh ${JUMP_CMD_PART} -C -N -M -D "${SOCKS_HOST}:${SOCKS_PORT}" "${FINAL_SERVER}" -p "${FINAL_PORT}" -c aes128-ctr -o ServerAliveInterval=60 -o ServerAliveCountMax=3
+    else # direct
+      echo "   to Final Host: ${FINAL_SERVER}:${FINAL_PORT}"
+      ssh -C -N -D "${SOCKS_HOST}:${SOCKS_PORT}" "${FINAL_SERVER}" -p "${FINAL_PORT}"
+    fi
+    ;;
+
+  close)
+    close_tunnel
+    ;;
+
+  help|*)
+    usage
+    ;;
+esac
+
+exit 0
