@@ -81,16 +81,14 @@ in
       brightness = 0.6;     
     };
   };
-
-  programs.fnm = {
-    enable = true;
-    # This automatically installs and sets Node.js v22 as the default.
-    # You can change this or comment it out if you prefer.
-    nodeJs-version = "22";
-  };
   
   # Standard boilerplate
-  programs.git = { enable = true; };
+  programs.git = { 
+    enable = true; 
+    extraConfig = {
+      credential.helper = "!gh auth git-credential";
+    };
+  };
   home.stateVersion = "25.05";
   programs.home-manager.enable = true;
 }
