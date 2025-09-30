@@ -1,0 +1,43 @@
+#!/bin/bash
+
+v2ray_version="$(brew info v2ray | grep v2ray | grep -oE "stable [0-9.]+" | cut -d " " -f 2)"
+
+iran_url="https://github.com/bootmortis/iran-hosted-domains/releases/latest/download/iran.dat"
+dlc_url="https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat"
+
+iran_file="/usr/local/bin/iran.dat"
+dlc_file="/usr/local/bin/domain-community-list.dat"
+
+if [ -z "$iran_file" ] || [ -z "$dlc_file" ]; then
+  echo "Usage: $0 </path/to/iran.dat> </path/to/dlc.dat>"
+  exit 1
+fi
+
+update_file() {
+  local url=$1
+  local file=$2
+
+  if [ -f "$file" ]; then
+    new_checksum=$(curl -L "$url.sha256" | cut -d " " -f 1)
+    current_checksum=$(shasum -a 256 "$file" | cut -d " " -f 1)
+
+    if [ "$new_checksum" != "$current_checksum" ]; then
+      curl -L "$url" -o "$file.temp"
+      if [ "$(shasum -a 256 "$file.temp" | cut -d " " -f 1)" == "$new_checksum" ]; then
+        mv "$file.temp" "$file"
+        echo "$file updated successfully."
+      else
+        rm "$file.temp"
+        echo "$file is invalid."
+      fi
+    else
+      echo "$file is already up to date."
+    fi
+  else
+    curl -L "$url" -o "$file"
+    echo "$file downloaded successfully."
+  fi
+}
+
+update_file "$iran_url" "$iran_file"
+update_file "$dlc_url" "$dlc_file"

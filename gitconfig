@@ -1,7 +1,7 @@
 [user]
 	name = S. Amir Mohammad Najafi
 	email = njfamirm@gmail.com
-	signingkey = 23CE144CDD6A7F9F47380DBE01F68AC379738FE4
+	signingkey = 3F9828FF9E775037409C37C063FA5F474B27F3D0 
 
 [alias]
   a = add -v

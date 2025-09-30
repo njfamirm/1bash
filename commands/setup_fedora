@@ -1,0 +1,242 @@
+#!/usr/bin/env bash
+# This script is designed to set up a Fedora-based environment,
+# including within a Distrobox container. It is an adaptation
+# of a Debian-based script, using dnf/rpm for package management.
+
+set -euo pipefail
+
+# --- Logging Functions ---
+log_info() {
+    echo "[INFO] $1"
+}
+
+log_success() {
+    echo "[SUCCESS] $1"
+}
+
+log_error() {
+    echo "[ERROR] $1"
+}
+
+# --- Configuration Functions ---
+configure_dnf_proxy() {
+    local dnf_conf="/etc/dnf/dnf.conf"
+    local proxy_line="proxy=http://127.0.0.1:1081"
+    
+    log_info "Configuring DNF proxy..."
+    if ! grep -q "^proxy=" "$dnf_conf"; then
+        echo "$proxy_line" | sudo tee -a "$dnf_conf" > /dev/null
+        log_success "DNF proxy configured in $dnf_conf"
+    else
+        log_info "DNF proxy setting already exists."
+    fi
+}
+
+# --- Installation Functions ---
+install_prerequisites() {
+    log_info "Updating DNF cache and installing prerequisites..."
+    sudo dnf makecache
+    sudo dnf install -y wget git gnupg curl vim
+    log_success "Prerequisites installed."
+}
+
+install_gnome_tweaks() {
+    if ! rpm -q gnome-tweaks &> /dev/null; then
+        log_info "Installing GNOME Tweaks..."
+        sudo dnf install -y gnome-tweaks
+        log_success "GNOME Tweaks installed."
+    else
+        log_info "GNOME Tweaks is already installed."
+    fi
+}
+
+install_zoxide() {
+    if ! command -v zoxide &> /dev/null; then
+        log_info "Installing zoxide..."
+        curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+        
+        if [ -f "$HOME/.bashrc" ]; then
+            echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
+            log_info "Zoxide added to .bashrc"
+        fi
+        log_success "Zoxide installed."
+    else
+        log_info "Zoxide is already installed."
+    fi
+}
+
+install_1bash() {
+    log_info "Installing 1bash..."
+    export ONE_BASH="$HOME/1bash"
+    
+    if bash <(curl -sS "https://raw.githubusercontent.com/njfamirm/1bash/main/setup.sh"); then
+        log_info "1bash installation completed."
+        if [ -f "$HOME/.bash_profile" ] && [ -r "$HOME/.bash_profile" ]; then
+            set +e
+            source ~/.bash_profile 2>/dev/null || log_info "Note: .bash_profile sourcing had issues, but continuing..."
+            set -e
+        else
+            log_info "No .bash_profile found to source."
+        fi
+        log_success "1bash installed and configured."
+    else
+        log_error "1bash installation failed, but continuing..."
+    fi
+}
+
+install_nvm() {
+    if [ ! -d "$HOME/.nvm" ] && [ ! -d "$HOME/.config/nvm" ]; then
+        log_info "Installing NVM..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+        
+        export NVM_DIR="$([ -d "$HOME/.config/nvm" ] && echo "$HOME/.config/nvm" || echo "$HOME/.nvm")"
+        [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+        
+        nvm install --lts
+        nvm use --lts
+        nvm alias default 'lts/*'
+        corepack enable
+        log_success "NVM installed with LTS Node.js and corepack enabled."
+    else
+        log_info "NVM is already installed."
+        export NVM_DIR="$([ -d "$HOME/.config/nvm" ] && echo "$HOME/.config/nvm" || echo "$HOME/.nvm")"
+        [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+        if ! nvm list | grep -q "v[0-9]"; then
+            log_info "Installing LTS Node.js with NVM..."
+            nvm install --lts
+            nvm use --lts
+            nvm alias default 'lts/*'
+            corepack enable
+            log_success "Node.js LTS installed and corepack enabled."
+        else
+            log_success "Node.js is already available."
+        fi
+    fi
+}
+
+install_gh() {
+    if ! command -v gh &> /dev/null; then
+        log_info "Installing GitHub CLI..."
+        sudo dnf install -y 'dnf-command(config-manager)'
+        sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+        sudo dnf install -y gh
+        log_success "GitHub CLI installed."
+    else
+        log_info "GitHub CLI is already installed."
+    fi
+}
+
+install_ffmpeg() {
+    if ! command -v ffmpeg &> /dev/null; then
+        log_info "Installing FFmpeg..."
+        log_info "Enabling RPM Fusion repositories (required for ffmpeg)..."
+        sudo dnf install -y \
+          "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
+          "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+        sudo dnf install -y ffmpeg
+        log_success "FFmpeg installed."
+    else
+        log_info "FFmpeg is already installed."
+    fi
+}
+
+install_git_crypt() {
+    if ! rpm -q git-crypt &> /dev/null; then
+        log_info "Installing git-crypt..."
+        sudo dnf install -y git-crypt
+        log_success "git-crypt installed."
+    else
+        log_info "git-crypt is already installed."
+    fi
+}
+
+# --- Interactive Menu ---
+show_menu() {
+    echo "========================================"
+    echo "    Fedora Container Package Installer"
+    echo "========================================"
+    echo "Available packages to install:"
+    echo ""
+    echo "1) Prerequisites (wget, git, curl, vim)"
+    echo "2) GNOME Tweaks"
+    echo "3) Zoxide (smart cd command)"
+    echo "4) 1bash (bash enhancement)"
+    echo "5) NVM & Node.js LTS"
+    echo "6) GitHub CLI"
+    echo "7) FFmpeg (multimedia framework)"
+    echo "8) git-crypt (repository encryption)"
+    echo "9) Install All"
+    echo "0) Exit"
+    echo ""
+    echo -n "Enter your choice (0-9): "
+}
+
+# Function to handle package selection
+select_packages() {
+    local selected_packages=()
+    local choice
+    while true; do
+        show_menu
+        read -r choice
+        case $choice in
+            1) selected_packages+=("prerequisites") ;;
+            2) selected_packages+=("gnome_tweaks") ;;
+            3) selected_packages+=("zoxide") ;;
+            4) selected_packages+=("1bash") ;;
+            5) selected_packages+=("nvm") ;;
+            6) selected_packages+=("gh") ;;
+            7) selected_packages+=("ffmpeg") ;;
+            8) selected_packages+=("git_crypt") ;;
+            9) selected_packages=("prerequisites" "gnome_tweaks" "zoxide" "1bash" "nvm" "gh" "ffmpeg" "git_crypt"); break ;;
+            0) break ;;
+            *) echo "Invalid choice. Please enter 0-9." ;;
+        esac
+        echo "'${selected_packages[-1]}' selected."
+        echo -n "Add another package? (y/n): "
+        read -r add_more
+        [[ $add_more != "y" && $add_more != "Y" ]] && break
+    done
+
+    echo -e "\nSelected packages: ${selected_packages[*]}\n"
+    for package in "${selected_packages[@]}"; do
+        "install_$package"
+    done
+}
+
+# --- Main Execution Logic ---
+main() {
+    # Check if running in non-interactive mode
+    if [[ $# -gt 0 && $1 == "--auto" ]]; then
+        log_info "Running in automatic mode..."
+        configure_dnf_proxy
+        install_prerequisites
+        install_gnome_tweaks
+        install_zoxide
+        install_1bash
+        install_nvm
+        install_gh
+        install_ffmpeg
+        install_git_crypt
+        log_success "=== Container Setup Complete ==="
+    else
+        log_info "Running in interactive mode..."
+        echo -n "Do you want to configure the DNF proxy? (y/n): "
+        read -r configure_proxy
+        if [[ $configure_proxy == "y" || $configure_proxy == "Y" ]]; then
+            configure_dnf_proxy
+        fi
+        select_packages
+        log_success "=== Interactive Setup Complete ==="
+    fi
+}
+
+# --- A Challenge For You ---
+# This script is a direct translation, which is a great exercise.
+# However, a more "Fedora-native" or modern approach for team management would be
+# to build a custom container image using a Containerfile (Dockerfile).
+# This creates an immutable, version-controlled base that all developers can use,
+# eliminating the need to run setup scripts inside the container.
+# It's the essence of Infrastructure as Code and a core Agile/DevOps practice.
+
+main "$@"

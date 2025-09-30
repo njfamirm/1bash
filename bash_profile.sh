@@ -8,9 +8,9 @@ if [ "$BASH" ]; then
   fi
 
   # Uncoment the following lines if you want to load ~/.bashrc too
-  if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-  fi
+  # if [ -f ~/.bashrc ]; then
+  #   . ~/.bashrc
+  # fi
 
   # if ! shopt -oq posix; then
   #   cd /srv
