@@ -85,6 +85,7 @@ alias gh_squash='gh pr merge -d -s'
 alias gh_pr='git p; gh pr create -a @me -w -B next'
 alias gh_pr_open='gh pr view --web'
 alias gh_repo_open='gh repo view --web'
+alias gh_ai_review='gh pr comment --body "/gemini review"'
 
 # Yarn package.json commands
 alias ys='yarn start'
