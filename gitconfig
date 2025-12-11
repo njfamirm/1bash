@@ -37,7 +37,7 @@
   fa = fetch --all -v
   chp = cherry-pick -v
   d = diff --color --color-words --abbrev
-  rn = !"git pl && git rebase origin/${1:-next} && git push -f #"
+  rn = !"git fetch origin && git rebase origin/${1:-next} && git push -f #"
   feat = !"git fetch && git switch -c feat/$1 origin/next && git push -u #"
   sep = !"git fetch && git switch -c feat/$1 origin/next && shift && git cherry-pick $@ && git push -u && gh pr create --assignee @me --base next --fill --web #"
   l = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
